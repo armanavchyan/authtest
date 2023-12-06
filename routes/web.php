@@ -20,6 +20,7 @@ Route::post('/signup', [AuthController::class, 'signupPost'])->name('signupPost'
 Route::get('/signin', [AuthController::class, 'signin'])->name('signin');
 Route::post('/signin', [AuthController::class, 'signinPost'])->name('signinPost');
 Route::delete('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::delete('/logoutcostum', [AuthController::class, 'logoutcostum'])->name('logoutcostum');
 
 Auth::routes();
 

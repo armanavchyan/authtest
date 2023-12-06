@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
@@ -30,20 +32,32 @@ class AuthController extends Controller
     }
     public function signinPost(Request $request)
     {
-        $credetials = [
-            'email'=>$request->email,
-            'password'=>$request->password
-        ];
-
-        if(Auth::attempt($credetials )){
-            return view('site');
+        $user = User::where('email', $request->email)->first();
+        $decrypt =Hash::check($request->password, $user->password);
+      
+        if ($user && $decrypt) {
+            session()->put(['name'=>$user->name,'email' => $request->email, 'password' => $request->password]);
+            return view('site_cost');
         }
-        return back()->with('error','email or password is wrong');
+        // $credetials = [
+        //     'email'=>$request->email,
+        //     'password'=>$request->password
+        // ];
+
+        // if(Auth::attempt($credetials )){
+        //     return view('site');
+        // }
+        return back()->with('error', 'email or password is wrong');
     }
     public function logout()
     {
         Auth::logout();
         return redirect()->route('signin');
+    }
 
+    public function logoutcostum()
+    {
+        Session::flush();
+        return redirect()->route('signin');
     }
 }
