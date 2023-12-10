@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Crypt;
+use App\Http\Requests\UserLoginRequest;
 use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
@@ -15,7 +16,7 @@ class AuthController extends Controller
     {
         return view('signup');
     }
-    public function signupPost(Request $request)
+    public function signupPost(UserRequest $request)
     {
 
         $user = new User();
@@ -30,14 +31,19 @@ class AuthController extends Controller
     {
         return view('signin');
     }
-    public function signinPost(Request $request)
+
+    public function signinPost(UserLoginRequest $request)
     {
         $user = User::where('email', $request->email)->first();
-        $decrypt =Hash::check($request->password, $user->password);
-      
-        if ($user && $decrypt) {
-            session()->put(['name'=>$user->name,'email' => $request->email, 'password' => $request->password]);
+
+        if ($user) {
+            $decrypt = Hash::check($request->password, $user->password);
+            if($decrypt){
+                session()->put(['name' => $user->name, 'email' => $request->email, 'password' => $request->password]);
             return view('site_cost');
+            }
+            return back()->with('error', 'email or password is wrong');
+            
         }
         // $credetials = [
         //     'email'=>$request->email,
