@@ -16,7 +16,7 @@ class UserLoginRequest extends FormRequest
 
 
         $rules = [
-            'email' => ['required',  'email'],
+            'email' => ['required','email','max:255'],
             'password' => ['required', 'min:6']
         ];
 

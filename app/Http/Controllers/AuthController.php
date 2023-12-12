@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
+    public function index()
+    {
+        return redirect()->route('signup');
+    }
     public function signup()
     {
         return view('signup');
